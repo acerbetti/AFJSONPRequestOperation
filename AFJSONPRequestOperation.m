@@ -1,0 +1,69 @@
+/*
+ * AFJSONPRequestOperation: https://github.com/acerbetti/AFJSONPRequestOperation
+ *
+ * Copyright (c) 2013 Stefano Acerbetti
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ */
+
+#import "AFJSONPRequestOperation.h"
+
+@interface AFJSONPRequestOperation ()
+@property (nonatomic, retain) NSString *jsonString;
+@end
+
+@implementation AFJSONPRequestOperation
+
++ (NSSet *)acceptableContentTypes
+{
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.yourserver.com/yourfile.csv"]];
+    AFJSONPRequestOperation *operation = [AFJSONPRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id CSV) {
+        NSLog(@"CSV Data:\n%@", CSV);
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id CSV) {
+        NSLog(@"Failure!");
+    }];
+    
+    [operation start];
+    
+    return [[super acceptableContentTypes] setByAddingObjectsFromArray:@[@"application/x-javascript", @"text/javascript"]];
+}
+
+- (NSString *)responseString
+{
+    if (self.jsonString == nil) {
+        NSString *dataString = [super responseString];
+        
+        // exclude the Javascript
+        NSRange jsonStart = [dataString rangeOfString:@"("];
+        jsonStart.location++;
+        
+        NSRange jsonEnd = [dataString rangeOfString:@")" options:NSBackwardsSearch];
+        jsonEnd.location--;
+        
+        // pass the JSON string to the super class
+        if (jsonStart.length > 0 && jsonEnd.length > 0) {
+            NSRange range = NSUnionRange(jsonStart, jsonEnd);
+            self.jsonString = [dataString substringWithRange:range];
+        }
+    }
+    return self.jsonString;
+}
+
+@end
