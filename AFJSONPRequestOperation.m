@@ -33,15 +33,6 @@
 
 + (NSSet *)acceptableContentTypes
 {
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.yourserver.com/yourfile.csv"]];
-    AFJSONPRequestOperation *operation = [AFJSONPRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id CSV) {
-        NSLog(@"CSV Data:\n%@", CSV);
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id CSV) {
-        NSLog(@"Failure!");
-    }];
-    
-    [operation start];
-    
     return [[super acceptableContentTypes] setByAddingObjectsFromArray:@[@"application/x-javascript", @"text/javascript"]];
 }
 
