@@ -1,7 +1,7 @@
 AFJSONPRequestOperation
 =======================
 
-AFJSONPRequestOperation is an extension for [AFNetworking](http://github.com/AFNetworking/AFNetworking/) that provides an interface to parse JSONP using [JSONP](http://en.wikipedia.org/wiki/JSONP)
+AFJSONPRequestOperation is an extension for [AFNetworking](http://github.com/AFNetworking/AFNetworking/) that provides an interface to parse [JSONP](http://en.wikipedia.org/wiki/JSONP)
 
 
 License
